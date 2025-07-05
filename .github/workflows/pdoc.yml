@@ -1,0 +1,39 @@
+name: DOCUMENTATION
+
+# Trigger the workflow on push events
+# This ensures the documentation is automatically updated whenever code changes are pushed to main
+on:
+  push
+
+permissions:
+  contents: read
+
+jobs:
+  pdoc:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout ${{ github.repository }}
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ inputs.python-version }}
+        uses: astral-sh/setup-uv@v6
+        with:
+          python-version: ${{ inputs.python-version }}
+
+      - name: Install dependencies
+        run: |
+          uv sync --all-extras
+
+      - name: Install and build pdoc
+        run: |
+          uv pip install pdoc
+          uv run pdoc -o artifacts/pdoc ${{ inputs.pdoc-arguments }} ${{ inputs.source-folder }}
+  
+
+      - name: Upload documentation
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdoc
+          path: artifacts/pdoc
+          retention-days: 1
