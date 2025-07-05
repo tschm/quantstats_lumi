@@ -13,6 +13,8 @@ on:
 # Set permissions for the workflow
 permissions:
   contents: read  # Only read access to repository contents is needed
+  pages: write
+  id-token: write
 
 jobs:
   pdoc:
@@ -44,12 +46,17 @@ jobs:
           pip install --no-cache-dir pdoc
           pdoc -o artifacts/pdoc quantstats_lumi
 
-      # Step 5: Upload the generated documentation as a workflow artifact
-      # This makes the documentation available for download from the GitHub Actions page
-      # The artifact is retained for 1 day to save storage space
-      - name: Upload documentation
-        uses: actions/upload-artifact@v4
+      # Step 5: Package all artifacts for GitHub Pages deployment
+      # This prepares the combined outputs for deployment by creating a single artifact
+      - name: Upload static files as artifact
+        uses: actions/upload-pages-artifact@v3  # Official GitHub Pages artifact upload action
         with:
-          name: pdoc
-          path: artifacts/pdoc
-          retention-days: 1
+          path: artifacts/pdoc  # Path to the directory containing all artifacts to deploy
+
+      # Step 6: Deploy the packaged artifacts to GitHub Pages
+      # This step publishes the content to GitHub Pages
+      - name: Deploy to GitHub Pages
+        #if: ${{ !github.event.repository.fork }}
+        uses: actions/deploy-pages@v4  # Official GitHub Pages deployment action
+
+
