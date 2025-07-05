@@ -24,24 +24,25 @@ jobs:
       - name: Checkout ${{ github.repository }}
         uses: actions/checkout@v4
 
-      # Step 2: Set up Python environment using uv (faster than pip)
+      # Step 2: Set up the Python 3.12
       - name: Set up Python 3.12
-        uses: astral-sh/setup-uv@v6
+        uses: actions/setup-python@v5
         with:
-          python-version: 3.12
+          python-version: '3.12'
 
-      # Step 3: Install all package dependencies including extras
+      # Step 3: Install all package dependencies from requirements.txt
       - name: Install dependencies
         run: |
-          uv sync --all-extras
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt --no-cache-dir
 
       # Step 4: Install pdoc and generate documentation
       # The documentation is output to the artifacts/pdoc directory
       # and specifically targets the quantstats_lumi package
       - name: Install and build pdoc
         run: |
-          uv pip install pdoc
-          uv run pdoc -o artifacts/pdoc quantstats_lumi
+          pip install --no-cache-dir pdoc
+          pdoc -o artifacts/pdoc quantstats_lumi
 
       # Step 5: Upload the generated documentation as a workflow artifact
       # This makes the documentation available for download from the GitHub Actions page
