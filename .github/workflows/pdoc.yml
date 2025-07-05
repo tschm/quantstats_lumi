@@ -1,35 +1,51 @@
 name: DOCUMENTATION
 
+# This workflow generates API documentation for the quantstats_lumi package using pdoc.
+# pdoc is a tool that automatically creates API documentation from Python docstrings.
+# The generated documentation provides a comprehensive reference of all modules, classes, 
+# functions, and methods in the package.
+
 # Trigger the workflow on push events
-# This ensures the documentation is automatically updated whenever code changes are pushed to main
+# This ensures the documentation is automatically updated whenever code changes are pushed to any branch
 on:
   push
 
+# Set permissions for the workflow
 permissions:
-  contents: read
+  contents: read  # Only read access to repository contents is needed
 
 jobs:
   pdoc:
+    name: Generate API Documentation
     runs-on: ubuntu-latest
 
     steps:
+      # Step 1: Check out the repository code
       - name: Checkout ${{ github.repository }}
         uses: actions/checkout@v4
 
+      # Step 2: Set up Python environment using uv (faster than pip)
       - name: Set up Python 3.12
         uses: astral-sh/setup-uv@v6
         with:
           python-version: 3.12
 
+      # Step 3: Install all package dependencies including extras
       - name: Install dependencies
         run: |
           uv sync --all-extras
 
+      # Step 4: Install pdoc and generate documentation
+      # The documentation is output to the artifacts/pdoc directory
+      # and specifically targets the quantstats_lumi package
       - name: Install and build pdoc
         run: |
           uv pip install pdoc
           uv run pdoc -o artifacts/pdoc quantstats_lumi
 
+      # Step 5: Upload the generated documentation as a workflow artifact
+      # This makes the documentation available for download from the GitHub Actions page
+      # The artifact is retained for 1 day to save storage space
       - name: Upload documentation
         uses: actions/upload-artifact@v4
         with:
