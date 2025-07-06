@@ -355,8 +355,11 @@ def plot_timeseries(
     _plt.yscale("symlog" if log_scale else "linear")
 
     # Set y-axis limits to avoid blank space at the bottom and top
-    min_val = returns.min()
-    max_val = returns.max()
+    # At this stage returns are a frame!
+
+    min_val = returns.min().min()
+    max_val = returns.max().max()
+
     if benchmark is not None:
         min_val = min(min_val, benchmark.min())
         max_val = max(max_val, benchmark.max())

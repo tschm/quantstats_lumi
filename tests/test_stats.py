@@ -24,56 +24,67 @@ def sample_benchmark():
 def test_geometric_mean(sample_returns):
     result = geometric_mean(sample_returns)
     assert isinstance(result, float)
+    assert result == pytest.approx(0.0018116481973156073)
 
 def test_volatility(sample_returns):
     vol = volatility(sample_returns)
     assert isinstance(vol, float)
     assert vol > 0
+    assert vol == pytest.approx(0.3904982572161992)
 
 def test_sharpe(sample_returns):
     sharpe_ratio = sharpe(sample_returns, rf=0.01)
     assert isinstance(sharpe_ratio, float)
+    assert sharpe_ratio == pytest.approx(1.8439250885518859)
 
 def test_sortino(sample_returns):
     sortino_ratio = sortino(sample_returns, rf=0.01)
     assert isinstance(sortino_ratio, float)
     assert not np.isnan(sortino_ratio)
+    assert sortino_ratio == pytest.approx(2.805780971175484)
 
 def test_max_drawdown(sample_returns):
     dd = max_drawdown(sample_returns)
     assert isinstance(dd, float)
     assert dd <= 0  # Drawdown should always be negative or zero
+    assert dd == pytest.approx(-0.029999999999999916)
 
 def test_win_rate(sample_returns):
     wr = win_rate(sample_returns)
     assert isinstance(wr, float)
     assert 0 <= wr <= 1  # Win rate should be between 0 and 1
+    assert wr == pytest.approx(0.6)
 
 def test_cagr(sample_returns):
     growth = cagr(sample_returns)
     assert isinstance(growth, float)
+    assert growth == pytest.approx(1.0845688420190212)
 
 def test_value_at_risk(sample_returns):
     var_result = value_at_risk(sample_returns, confidence=0.95)
     assert isinstance(var_result, float)
     assert var_result < 0  # VaR should be negative for typical return series
+    assert var_result == pytest.approx(-0.03162017150362553)
 
 def test_consecutive_wins(sample_returns):
     wins = consecutive_wins(sample_returns)
     # numpy integers are not instances of Python int
     assert isinstance(wins, (int, np.integer))
     assert wins >= 0
+    assert wins == 2
 
 def test_consecutive_losses(sample_returns):
     losses = consecutive_losses(sample_returns)
     # numpy integers are not instances of Python int
     assert isinstance(losses, (int, np.integer))
     assert losses >= 0
+    assert losses == 1
 
 def test_profit_factor(sample_returns):
     pf = profit_factor(sample_returns)
     assert isinstance(pf, float)
     assert pf >= 0
+    assert pf == pytest.approx(1.2499999999999998)
 
 def test_benchmark_correlation(sample_returns, sample_benchmark):
     # Since Series.corrwith is not available, we'll calculate correlation manually
@@ -81,6 +92,7 @@ def test_benchmark_correlation(sample_returns, sample_benchmark):
     corr = sample_returns.corr(sample_benchmark)
     assert isinstance(corr, float)
     assert -1 <= corr <= 1
+    assert corr == pytest.approx(0.985919893073543)
 
 def test_outliers(sample_returns):
     out = outliers(sample_returns)
