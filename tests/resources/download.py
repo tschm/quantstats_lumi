@@ -35,6 +35,3 @@ if __name__ == '__main__':
 
     spy = download_returns("SPY")
     spy.to_csv("benchmark.csv")
-
-    portfolio = download_returns(ticker=["AAPL", "META"])
-    portfolio.to_csv("portfolio.csv")
