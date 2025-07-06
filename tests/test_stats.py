@@ -24,8 +24,6 @@ def sample_benchmark():
 def test_geometric_mean(sample_returns):
     result = geometric_mean(sample_returns)
     assert isinstance(result, float)
-    # geometric mean is different from arithmetic mean
-    assert isinstance(result, float)
 
 def test_volatility(sample_returns):
     vol = volatility(sample_returns)
