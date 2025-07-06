@@ -42,7 +42,7 @@ def benchmark(resource_dir) -> pd.DataFrame:
 
     """
     dframe = pd.read_csv(resource_dir / "benchmark.csv", parse_dates=["Date"])
-    return dframe[["Date", "SPY -- Benchmark"]]
+    return dframe[["Date", "SPY"]]
 
 
 
